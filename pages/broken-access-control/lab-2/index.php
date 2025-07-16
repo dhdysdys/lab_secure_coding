@@ -3,12 +3,12 @@ $page_title = "Broken Access Control Lab 2 - Horizontal Privilege Escalation";
 require_once '../../../config/env.php';
 require_once '../../../template/header.php';
 
-if (isset($_GET['user_id'])) {
-    $user_id = $_GET['user_id'];
+session_start();
+    if (isset($_GET['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+    }
 
-}
-
-$current_user = $user_id ?? null;
+$current_user =  $_SESSION['user_id'] ?? null;
 ?>
 
 <div class="container-fluid">

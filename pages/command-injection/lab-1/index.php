@@ -8,9 +8,8 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $domain = $_POST['domain'] ?? '';
-    
-    if ($domain) {
-        // VULNERABLE CODE - Command injection vulnerability
+
+    if (!preg_match("/[;|&`><]/", $domain)) {
         $output =  system("nslookup $domain");
         if ($output == null): 
             $output = "No output returned. Please check the domain.";

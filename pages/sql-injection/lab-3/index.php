@@ -9,13 +9,13 @@ $error_message = '';
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     
-    // VULNERABLE CODE - URL Parameter SQL Injection
-    $query = "SELECT * FROM user_profiles WHERE id = $id";
+    $sql = $pdo->prepare("SELECT * FROM user_profiles WHERE id = :id");
+    $sql->bindParam(':id', $id);
     
     try {
-        $result = $pdo->query($query);
-        if ($result) {
-            $user_data = $result->fetch(PDO::FETCH_ASSOC);
+        $sql->execute();
+        if ($sql) {
+            $user_data = $sql->fetch(PDO::FETCH_ASSOC);
         }
     } catch (PDOException $e) {
         $error_message = "Database error: " . $e->getMessage();

@@ -13,11 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     $start_time = microtime(true);
     
-    // VULNERABLE CODE - Blind SQL Injection
-    $query = "SELECT * FROM users WHERE email = '$email' AND password = 'sha1($password)'";
+    $sql = $pdo->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
+    $sql->bindParam(':email', $email);
+    $sql->bindParam(':password', sha1($password)); // sebaiknya hash password dulu
     
     try {
-        $result = $pdo->query($query);
+        $result = $sql->execute();
+        
         $end_time = microtime(true);
         $login_time = number_format(($end_time - $start_time) * 1000, 2);
         

@@ -11,17 +11,26 @@ $is_login = false;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
-    
+
     $_SESSION['login_attempts'] = $attempts + 1;
 
-    $query = "SELECT * FROM users WHERE email = '$email' AND password = '" . sha1($password) . "'";
+    $sql = $pdo->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
+    $sql->bindParam(':email', $email);
+    $sql->bindParam(':password', sha1($password));
+    $sql->execute();
 
     try {
-        $result = $pdo->query($query);
-        if ($result && $result->rowCount() > 0) {
-            $user = $result->fetch(PDO::FETCH_ASSOC);
-            $message = "Login successful! Weak password detected: " . htmlspecialchars($password);
-            $alert_class = "alert-info";
+        if ($sql && $sql->rowCount() > 0) {
+            $user = $sql->fetch(PDO::FETCH_ASSOC);
+            
+            if( strlen($password) < 8  || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[\W_]/', $password) ) {
+                $message = "Login successful! Weak password detected: " . htmlspecialchars($password);
+                $alert_class = "alert-info";
+            }else{
+                $message = "Login successful!";
+                $alert_class = "alert-success";
+            }
+            
             $is_login = true;
         } else {
             $_SESSION['login_attempts'] = ($_SESSION['login_attempts'] ?? 0) + 1;

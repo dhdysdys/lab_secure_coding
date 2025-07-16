@@ -54,7 +54,7 @@ $error_message = $_GET['error'] ?? '';
                                 
                                 <?php if ($search_term): ?>
                                     <div class="alert alert-info" role="alert">
-                                        <h5>Search Results for: <?php echo $search_term; ?></h5>
+                                        <h5>Search Results for: <?php echo htmlspecialchars($search_term) ; ?></h5>
                                         <p>No users found matching your search criteria.</p>
                                     </div>
                                 <?php endif; ?>

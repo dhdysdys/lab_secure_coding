@@ -10,20 +10,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
    
-    // VULNERABLE CODE - Do not use in production!
-    $query = "SELECT * FROM users WHERE email = '$email' AND password = '" . sha1($password) . "'";
-    
+    $query = "SELECT * FROM users WHERE email = :email AND password = :password";
+    $sql = $pdo->prepare($query);
+    $sql->bindParam(':email', $email);
+    $sql->bindParam(':password', sha1($password)); // sebaiknya hash password dulu
+   
     try {
-        $result = $pdo->query($query);
-        if ($result && $result->rowCount() > 0) {
-            $user = $result->fetch(PDO::FETCH_ASSOC);
-            $success_message = "Login successful! Welcome, " . $user['email'];
-            if ($user['role'] === 'admin') {
-                $success_message .= " (Admin Access Granted)";
-                $is_login = true;
-            }
+        $sql->execute();
+        if ($sql && $sql->rowCount() > 0) {
+            $result = $sql->fetch(PDO::FETCH_ASSOC); 
+            $is_login = true;
+            $success_message = "Success!";
         } else {
-            $error_message = "Invalid email or password.";
+            $error_message = "Invalid credentials";
         }
     } catch (PDOException $e) {
         $error_message = "Database error: " . $e->getMessage();
@@ -63,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <h5 class="mb-0">Vulnerable Login Form</h5>
                             </div>
                             <div class="card-body">
+                                 <?php $data; ?>
                                 <?php if ($error_message): ?>
                                     <div class="alert alert-danger" role="alert">
                                         <?php echo htmlspecialchars($error_message); ?>

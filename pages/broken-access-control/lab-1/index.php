@@ -11,13 +11,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'] ?? '';
     $role = $_POST['role'] ?? 'user'; // VULNERABLE - Role can be manipulated
    
-    $query = "SELECT * FROM users WHERE email = '$email' AND password = '" . sha1($password) . "'";
+    $sql = $pdo->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
+    $sql->bindParam(':email', $email);
+    $sql->bindParam(':password', sha1($password)); // sebaiknya hash password dulu
+    
     try {
-        $result = $pdo->query($query);
-        if ($result && $result->rowCount() > 0) {
-            $user = $result->fetch(PDO::FETCH_ASSOC);
-             $_SESSION['user_role'] = $role;
-             $is_login = true;
+        $sql->execute();
+        if ($sql && $sql->rowCount() > 0) {
+            $user = $sql->fetch(PDO::FETCH_ASSOC);
+
+            if($user["role"] == $role){
+                $_SESSION['user_role'] = $role;
+                $is_login = true;
+                $_SESSION["user_id"] = $user["id"];
+            }else{
+                $message = "Login Error!";
+            }
         } else {
             $message = "Invalid credentials";
         }
@@ -65,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <?php echo $message; ?>
                                     </div>
                                 <?php endif; ?>
-                                <?php if($is_login && !$is_admin): ?>
+                                <?php if($is_login ): ?>
                                     <div class="alert alert-success" role="alert">
                                         Login successful! Role: <?php echo htmlspecialchars($user_role); ?>
                                     </div>
