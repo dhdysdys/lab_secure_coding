@@ -1,4 +1,4 @@
-# Lab Secure Coding Polytron
+# Lab Secure Coding 
 
 Aplikasi web untuk pembelajaran secure coding yang mendemonstrasikan berbagai kerentanan keamanan web dan cara mengatasinya.
 
@@ -13,7 +13,7 @@ Aplikasi web untuk pembelajaran secure coding yang mendemonstrasikan berbagai ke
 1. **Clone atau download repository ini**
    ```bash
    git clone <repository-url>
-   cd lab_polytron
+   cd lab_
    ```
 
 2. **Jalankan aplikasi menggunakan Docker Compose**
@@ -25,7 +25,7 @@ Aplikasi web untuk pembelajaran secure coding yang mendemonstrasikan berbagai ke
    - Membangun image Docker untuk aplikasi PHP
    - Menjalankan container MySQL dengan database yang sudah dikonfigurasi
    - Menjalankan container phpMyAdmin untuk manajemen database
-   - Mengimpor database dari file `db_secure_coding_polytron.sql`
+   - Mengimpor database dari file `db_secure_coding_.sql`
 
 3. **Akses aplikasi**
    - **Aplikasi utama**: http://localhost:8000
@@ -48,8 +48,8 @@ docker-compose down -v
 ### Konfigurasi Database
 
 Aplikasi menggunakan konfigurasi database berikut:
-- **Host**: `secure_coding_polytron` (nama service dalam Docker network)
-- **Database**: `db_secure_coding_polytron`
+- **Host**: `secure_coding_` (nama service dalam Docker network)
+- **Database**: `db_secure_coding_`
 - **Username**: `root`
 - **Password**: `root`
 - **Port**: `3306` (internal container)
@@ -63,5 +63,5 @@ Aplikasi menggunakan konfigurasi database berikut:
 ### Struktur Container
 
 - **php**: Container aplikasi PHP dengan Apache (port 8000)
-- **secure_coding_polytron**: Container MySQL database (port 3307)
+- **secure_coding_**: Container MySQL database (port 3307)
 - **phpmyadmin**: Container phpMyAdmin untuk manajemen database (port 9000)
